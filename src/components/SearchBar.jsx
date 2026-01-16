@@ -8,16 +8,24 @@ function SearchBar() {
   const [searchLang, setSearchLang] = useState("");
   const [searchGenre, setSearchGenre] = useState("");
   const placeholders = {
-    title: 'Digite o título do livro',
-    author: 'Digite o nome autor',
-    isbn: 'Digite o ISBN'
-  }
+    title: "Digite o título do livro",
+    author: "Digite o nome autor",
+    isbn: "Digite o ISBN",
+  };
 
   const navigate = useNavigate();
-  
 
   const handleSearch = (e) => {
     e.preventDefault();
+
+    console.log('searchTerm:', searchTerm)
+    console.log('searchType:', searchType)
+    console.log('searchLang:', searchLang)
+    console.log('searchGenre:', searchGenre)
+
+    if (!searchTerm.trim()) {
+      return;
+    }
 
     navigate(
       `/results?q=${searchTerm}&type=${searchType}&lang=${searchLang}&genre=${searchGenre}`
@@ -55,6 +63,7 @@ function SearchBar() {
           className="flex-1 px-2 py-1 outline-none text-gray-700 placeholder:text-gray-400"
           placeholder={placeholders[searchType]}
           onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTerm}
         />
 
         <button
@@ -174,7 +183,9 @@ function SearchBar() {
         {/* Select Dropdowns */}
         <div className="flex gap-2">
           <div className="flex-1 relative">
-            <label htmlFor="langSelect" className="sr-only">Idioma</label>
+            <label htmlFor="langSelect" className="sr-only">
+              Idioma
+            </label>
             <select
               id="langSelect"
               onChange={(e) => setSearchLang(e.target.value)}
@@ -203,7 +214,9 @@ function SearchBar() {
           </div>
 
           <div className="flex-1 relative">
-            <label htmlFor="genreSelect" className="sr-only">Gênero</label>
+            <label htmlFor="genreSelect" className="sr-only">
+              Gênero
+            </label>
             <select
               id="genreSelect"
               onChange={(e) => setSearchGenre(e.target.value)}
