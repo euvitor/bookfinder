@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useSearchParams } from "react-router-dom";
+import SearchItem from "../components/SearchItem";
 
 function Results() {
   const [books, setBooks] = useState([]);
@@ -55,8 +56,11 @@ function Results() {
     };
     fetchBooks();
 
-    return () => {isActive = false};
+    return () => {
+      isActive = false;
+    };
   }, [searchParams]);
+  console.log(loading)
   console.log(books);
 
   //   TODO: cards para exibição dos itens da pesquisa
@@ -64,8 +68,16 @@ function Results() {
   return (
     <>
       <Header />
-      <div>
-        <p>a</p>
+      <div className="w-full flex flex-wrap gap-10 p-10 justify-center">
+        {books.map((book) => {
+          return <SearchItem
+            key={book.id}
+            id={book.id}
+            image={book.volumeInfo.imageLinks?.thumbnail}
+            title={book.volumeInfo.title}
+            author={book.volumeInfo.authors?.join(",") || "Autor Desconheciddo"}
+          />;
+        })}
       </div>
       <Footer />
     </>
