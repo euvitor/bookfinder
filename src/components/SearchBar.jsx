@@ -18,29 +18,26 @@ function SearchBar() {
   const handleSearch = (e) => {
     e.preventDefault();
 
-    console.log('searchTerm:', searchTerm)
-    console.log('searchType:', searchType)
-    console.log('searchLang:', searchLang)
-    console.log('searchGenre:', searchGenre)
-
-    if (!searchTerm.trim()) {
-      return;
-    }
+    if (!searchTerm.trim()) return;
 
     navigate(
-      `/results?q=${searchTerm}&type=${searchType}&lang=${searchLang}&genre=${searchGenre}`
+      `/results?q=${searchTerm}&type=${searchType}&lang=${searchLang}&genre=${searchGenre}`,
     );
   };
 
   return (
-    <form onSubmit={handleSearch} className="w-sm m-auto mt-8">
+    <form
+      onSubmit={handleSearch}
+      className="w-full max-w-xl mx-auto mt-8 px-4 relative"
+    >
       {/* Search Input */}
-      <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-1 mb-2">
+      <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-1 bg-white shadow-md">
         <button
           type="button"
           onClick={() => setShowFilter(!showFilter)}
-          className="flex-none rounded-md p-2 hover:bg-gray-100 text-gray-600 transition"
+          className={`flex-none rounded-md p-2 ${showFilter ? "bg-blue-100 text-blue-600" : "hover:bg-gray-100 text-gray-600"}`}
           aria-label="Toggle filters"
+          aria-expanded={showFilter}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +65,7 @@ function SearchBar() {
 
         <button
           type="submit"
-          className="flex-none rounded-md p-2 hover:bg-blue-500 text-gray-600 hover:text-white transition"
+          className="flex-none rounded-md p-2 bg-blue-500 text-white hover:bg-blue-600"
           aria-label="Search"
         >
           <svg
@@ -89,163 +86,125 @@ function SearchBar() {
       </div>
 
       {/* Filters */}
-      <div
-        className={`border-2 border-gray-300 rounded-lg p-2 transition-all duration-200 ${
-          showFilter ? "block" : "hidden"
-        }`}
-      >
-        {/* Search Type Buttons */}
-        <div className="flex rounded-md mb-2 gap-1">
-          <button
-            type="button"
-            onClick={() => setSearchType("title")}
-            className={`flex flex-1 items-center justify-center gap-1 px-2 py-1.5 rounded-md text-sm transition ${
-              searchType === "title"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
-              />
-            </svg>
-            <span>Título</span>
-          </button>
+      {showFilter && (
+        <div className="absolute top-full left-0 right-0 mt-2 px-4 z-10 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="border-2 border-gray-300 rounded-lg p-4 bg-white shadow-lg">
+            {/* Search Type Buttons */}
+            <div className="flex rounded-md mb-3 gap-1">
+              {[
+                {
+                  type: "title",
+                  label: "Título",
+                  icon: "M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25",
+                },
+                {
+                  type: "author",
+                  label: "Autor",
+                  icon: "M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z",
+                },
+                {
+                  type: "isbn",
+                  label: "ISBN",
+                  icon: "M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z",
+                },
+              ].map(({ type, label, icon }) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setSearchType(type)}
+                  className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition ${
+                    searchType === type
+                      ? "bg-blue-500 text-white shadow-sm"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-4 h-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d={icon}
+                    />
+                  </svg>
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
 
-          <button
-            type="button"
-            onClick={() => setSearchType("author")}
-            className={`flex flex-1 items-center justify-center gap-1 px-2 py-1.5 rounded-md text-sm transition ${
-              searchType === "author"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+            {/* Select Dropdowns */}
+            <div className="flex gap-2">
+              <SelecField
+                id="langSelect"
+                label="Idioma"
+                value={searchLang}
+                onChange={setSearchLang}
+                options={[
+                  { value: "", label: "Todas as linguas" },
+                  { value: "pt-br", label: "Português" },
+                  { value: "en", label: "Inglês" },
+                  { value: "es", label: "Espanhol" },
+                  { value: "fr", label: "Francês" },
+                ]}
               />
-            </svg>
-            <span>Autor</span>
-          </button>
 
-          <button
-            type="button"
-            onClick={() => setSearchType("isbn")}
-            className={`flex flex-1 items-center justify-center gap-1 px-2 py-1.5 rounded-md text-sm transition ${
-              searchType === "isbn"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z"
+              <SelecField
+                id="genreSelect"
+                label="Gênero"
+                value={searchGenre}
+                onChange={setSearchGenre}
+                options={[
+                  { value: "", label: "Todos os gêneros" },
+                  { value: "fantasy", label: "Fantasia" },
+                  { value: "action", label: "Ação" },
+                  { value: "romance", label: "Romance" },
+                  { value: "horror", label: "Terror" },
+                ]}
               />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z"
-              />
-            </svg>
-            <span>ISBN</span>
-          </button>
-        </div>
-
-        {/* Select Dropdowns */}
-        <div className="flex gap-2">
-          <div className="flex-1 relative">
-            <label htmlFor="langSelect" className="sr-only">
-              Idioma
-            </label>
-            <select
-              id="langSelect"
-              onChange={(e) => setSearchLang(e.target.value)}
-              className="w-full appearance-none border-2 border-gray-300 rounded-md px-3 py-1.5 pr-8 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
-            >
-              <option value="">Todas as línguas</option>
-              <option value="pt-br">Português</option>
-              <option value="en">Inglês</option>
-              <option value="es">Espanhol</option>
-              <option value="fr">Francês</option>
-            </select>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m19.5 8.25-7.5 7.5-7.5-7.5"
-              />
-            </svg>
-          </div>
-
-          <div className="flex-1 relative">
-            <label htmlFor="genreSelect" className="sr-only">
-              Gênero
-            </label>
-            <select
-              id="genreSelect"
-              onChange={(e) => setSearchGenre(e.target.value)}
-              className="w-full appearance-none border-2 border-gray-300 rounded-md px-3 py-1.5 pr-8 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
-            >
-              <option value="">Todos os gêneros</option>
-              <option value="fantasy">Fantasia</option>
-              <option value="action">Ação</option>
-              <option value="romance">Romance</option>
-              <option value="horror">Terror</option>
-            </select>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m19.5 8.25-7.5 7.5-7.5-7.5"
-              />
-            </svg>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </form>
+  );
+}
+
+function SelecField({ id, label, value, onChange, options }) {
+  return (
+    <div className="flex-1 relative">
+      <label htmlFor={id} className="sr-only">{label}</label>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full appearance-none border-2 border-gray-300 rounded-md px-3 py-2 pr-8 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer transition"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m19.5 8.25-7.5 7.5-7.5-7.5"
+        />
+      </svg>
+    </div>
   );
 }
 
