@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CustomCombobox from "./CustomCombobox";
 
 function SearchBar() {
   const [showFilter, setShowFilter] = useState(false);
@@ -31,7 +32,7 @@ function SearchBar() {
       className="w-full max-w-xl mx-auto mt-8 px-4 relative"
     >
       {/* Search Input */}
-      <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-1 bg-white shadow-md">
+      <div className="border-2 border-gray-200 rounded-lg p-1 flex gap-1 bg-white shadow-sm">
         <button
           type="button"
           onClick={() => setShowFilter(!showFilter)}
@@ -65,7 +66,7 @@ function SearchBar() {
 
         <button
           type="submit"
-          className="flex-none rounded-md p-2 bg-blue-500 text-white hover:bg-blue-600"
+          className="flex-none rounded-md p-2 bg-white text-gray-600 hover:bg-gray-100 active:bg-blue-600 active:text-white"
           aria-label="Search"
         >
           <svg
@@ -87,10 +88,10 @@ function SearchBar() {
 
       {/* Filters */}
       {showFilter && (
-        <div className="absolute top-full left-0 right-0 mt-2 px-4 z-10 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="border-2 border-gray-300 rounded-lg p-4 bg-white shadow-lg">
+        <div className="absolute top-full left-0 right-0 mt-1 px-4 z-10 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="border-2 border-gray-200 rounded-lg p-1 bg-white shadow-md">
             {/* Search Type Buttons */}
-            <div className="flex rounded-md mb-3 gap-1">
+            <div className="flex rounded-md mb-2 gap-2">
               {[
                 {
                   type: "title",
@@ -139,22 +140,19 @@ function SearchBar() {
 
             {/* Select Dropdowns */}
             <div className="flex gap-2">
-              <SelecField
-                id="langSelect"
+              <CustomCombobox
                 label="Idioma"
                 value={searchLang}
                 onChange={setSearchLang}
                 options={[
-                  { value: "", label: "Todas as linguas" },
+                  { value: "", label: "Todas as línguas" },
                   { value: "pt-br", label: "Português" },
                   { value: "en", label: "Inglês" },
                   { value: "es", label: "Espanhol" },
                   { value: "fr", label: "Francês" },
                 ]}
               />
-
-              <SelecField
-                id="genreSelect"
+              <CustomCombobox
                 label="Gênero"
                 value={searchGenre}
                 onChange={setSearchGenre}
@@ -171,40 +169,6 @@ function SearchBar() {
         </div>
       )}
     </form>
-  );
-}
-
-function SelecField({ id, label, value, onChange, options }) {
-  return (
-    <div className="flex-1 relative">
-      <label htmlFor={id} className="sr-only">{label}</label>
-      <select
-        id={id}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none border-2 border-gray-300 rounded-md px-3 py-2 pr-8 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer transition"
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="m19.5 8.25-7.5 7.5-7.5-7.5"
-        />
-      </svg>
-    </div>
   );
 }
 
