@@ -1,2 +1,14 @@
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('./assets/fonts/ClashDisplay-Variable.woff2') format('woff2');
+    font-weight: 200 700;
+    font-style: normal;
+    font-display: swap;
+}
+
 @import "tailwindcss";
 @import "tw-animate-css";
+
+@theme{
+    --font-display: 'ClashDisplay', system-ui, sans-serif;
+}

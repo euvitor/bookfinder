@@ -52,6 +52,7 @@ function CustomCombobox({ label, value, onChange, options }) {
         <ComboboxOptions
           anchor="bottom start"
           transition
+          data-combobox-options="true"
           className="absolute z-10 mt-1 max-h-60 w-(--input-width) overflow-auto rounded-sm bg-white p-1 text-sm shadow-lg ring-2 ring-gray-200 ring-opacity-5 focus:outline-none empty:invisible transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0"
         >
           {filteredOptions.length === 0 && query !== "" ? (
@@ -63,6 +64,7 @@ function CustomCombobox({ label, value, onChange, options }) {
               <ComboboxOption
                 key={option.value}
                 value={option}
+                data-combobox-option="true"
                 className="relative rounded-sm cursor-pointer select-none py-2 px-3 data-focus:bg-blue-100 data-focus:text-slate-800 data-selected:font-medium text-gray-700 transition"
               >
                 {({ selected }) => (
