@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useSearchParams } from "react-router-dom";
 import SearchItem from "../components/SearchItem";
+import { searchBooks } from "../api/books";
 
 function Results() {
   const [books, setBooks] = useState([]);
@@ -16,38 +17,35 @@ function Results() {
       setLoading(true);
 
       const query = searchParams.get("q");
-      const type = searchParams.get("type");
+      const type = searchParams.get("type") || "title";
       const lang = searchParams.get("lang");
       const genre = searchParams.get("genre");
 
-      let searchQuery = "";
-      if (type === "title") {
-        searchQuery = `intitle:${query}`;
-      } else if (type === "author") {
-        searchQuery = `inauthor:${query}`;
-      } else if (type === "isbn") {
-        searchQuery = `isbn:${query}`;
-      }
-
-      if (genre) {
-        searchQuery += `+subject:${genre}`;
-      }
-
-      let apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=30`;
-
-      if (lang) {
-        apiUrl += `&langRestrict=${lang}`;
+      if (!query) {
+        if (isActive) {
+          setBooks([]);
+          setLoading(false);
+        }
+        return;
       }
 
       try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+        const data = await searchBooks({
+          q: query,
+          type,
+          lang,
+          genre,
+          maxResults: 30,
+        });
 
         if (isActive) {
           setBooks(data.items || []);
         }
       } catch (error) {
-        console.error(`Erro: ${error}`);
+        console.error("Erro ao buscar livros:", error);
+        if (isActive) {
+          setBooks([]);
+        }
       } finally {
         if (isActive) {
           setLoading(false);
@@ -60,23 +58,25 @@ function Results() {
       isActive = false;
     };
   }, [searchParams]);
-  console.log(loading)
+  console.log(loading);
   console.log(books);
-
-  //   TODO: cards para exibição dos itens da pesquisa
 
   return (
     <>
       <Header />
       <div className="w-full flex flex-wrap gap-10 p-10 justify-center">
         {books.map((book) => {
-          return <SearchItem
-            key={book.id}
-            id={book.id}
-            image={book.volumeInfo.imageLinks?.thumbnail}
-            title={book.volumeInfo.title}
-            author={book.volumeInfo.authors?.join(",") || "Autor Desconheciddo"}
-          />;
+          return (
+            <SearchItem
+              key={book.id}
+              id={book.id}
+              image={book.volumeInfo.imageLinks?.thumbnail}
+              title={book.volumeInfo.title}
+              author={
+                book.volumeInfo.authors?.join(",") || "Autor Desconheciddo"
+              }
+            />
+          );
         })}
       </div>
       <Footer />
