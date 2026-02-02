@@ -1,16 +1,30 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { getBestBookCover } from "../utils/imageHelpers";
 
 function Details() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [book, setBook] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
+  const [book, setBook] = useState(location.state?.book || null);
+  const [loading, setLoading] = useState(!location.state?.book);
   const [error, setError] = useState(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (location.state?.book) {
+      console.log("✅ Usando dados da lista (sem chamar API)");
+      return;
+    }
+
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    console.log("⚠️ Dados não encontrados, chamando API...");
+
     const fetchBookDetails = async () => {
       setLoading(true);
       setError(null);
@@ -23,7 +37,7 @@ function Details() {
         if (!response.ok) {
           if (response.status === 429) {
             throw new Error(
-              "Muitas requisições. Tente novamente em alguns minutos.",
+              "Limite de requisições atingido. Tente acessar via página de busca.",
             );
           }
           throw new Error(`Erro ${response.status}: ${response.statusText}`);
@@ -45,8 +59,9 @@ function Details() {
     };
 
     fetchBookDetails();
-  }, [id]);
+  }, [id, location.state]);
 
+  // Estado de loading
   if (loading) {
     return (
       <>
@@ -60,6 +75,7 @@ function Details() {
     );
   }
 
+  // Estado de erro
   if (error || !book || !book.volumeInfo) {
     return (
       <>
@@ -68,7 +84,7 @@ function Details() {
           <h1 className="text-2xl font-bold text-red-600 mb-4">
             Erro ao carregar livro
           </h1>
-          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+          <p className="text-gray-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
             {error || "Livro não encontrado"}
           </p>
           <button
@@ -78,39 +94,39 @@ function Details() {
             Voltar à busca
           </button>
         </div>
+        <Footer />
       </>
     );
   }
 
   const { volumeInfo } = book;
 
+  console.log("🔍 volumeInfo.imageLinks:", volumeInfo.imageLinks);
   return (
     <>
       <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* coluna capa */}
           <div>
             <img
-              src={
-                volumeInfo.imageLinks?.large || volumeInfo.imageLinks?.thumbnail ||'/placeholder-book.jpg'
-              }
+              src={getBestBookCover(volumeInfo.imageLinks)}
               alt={volumeInfo.title}
               className="w-full rounded-lg shadow-lg"
             />
           </div>
 
-          {/* coluna info */}
           <div>
-            <h1 className="text-3xl font-bold mb-2">{volumeInfo.title}</h1>
+            <h1 className="text-3xl font-bold mb-2 dark:text-slate-50">
+              {volumeInfo.title}
+            </h1>
 
             {volumeInfo.subtitle && (
-              <h2 className="text-xl text-gray-600 mb-4">
+              <h2 className="text-xl text-gray-600 dark:text-slate-400 mb-4">
                 {volumeInfo.subtitle}
               </h2>
             )}
 
-            <div className="space-y-3 mb-6">
+            <div className="space-y-3 mb-6 dark:text-slate-200">
               <p>
                 <strong>Autor(es):</strong>{" "}
                 {volumeInfo.authors?.join(", ") || "Desconhecido"}
@@ -134,9 +150,11 @@ function Details() {
 
             {volumeInfo.description && (
               <div>
-                <h3 className="text-xl font-bold mb-2">Descrição</h3>
+                <h3 className="text-xl font-bold mb-2 dark:text-slate-50">
+                  Descrição
+                </h3>
                 <div
-                  className="text-gray-700 leading-relaxed"
+                  className="text-gray-700 dark:text-slate-300 leading-relaxed prose max-w-none"
                   dangerouslySetInnerHTML={{ __html: volumeInfo.description }}
                 />
               </div>

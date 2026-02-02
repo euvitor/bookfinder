@@ -58,8 +58,6 @@ function Results() {
       isActive = false;
     };
   }, [searchParams]);
-  console.log(loading);
-  console.log(books);
 
   return (
     <>
@@ -72,9 +70,8 @@ function Results() {
               id={book.id}
               image={book.volumeInfo.imageLinks?.thumbnail}
               title={book.volumeInfo.title}
-              author={
-                book.volumeInfo.authors?.join(",") || "Autor Desconheciddo"
-              }
+              author={book.volumeInfo.authors?.join(",") || "Autor Desconheciddo"}
+              book={book}
             />
           );
         })}
