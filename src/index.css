@@ -9,6 +9,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@theme{
+@theme {
     --font-display: 'ClashDisplay', system-ui, sans-serif;
 }
+
+@custom-variant dark (&:is(.dark *));

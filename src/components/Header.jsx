@@ -1,17 +1,34 @@
+import { useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 import SearchBar from "./SearchBar";
 
 function Header() {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const goHome = () => {
+    navigate("/");
+  };
+
   return (
-    <div className="w-full p-2">
-      <div className="flex justify-center">
-        <button className="text-gray-800">
+    <header className="w-full px-4 pt-3 pb-4 border-b border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800">
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={handleBack}
+          className="p-2 rounded-md text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 transition"
+          aria-label="Voltar para a página anterior"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-8"
+            className="w-7 h-7"
           >
             <path
               strokeLinecap="round"
@@ -20,28 +37,19 @@ function Header() {
             />
           </svg>
         </button>
-        <h1 className="w-full text-center text-3xl font-bold text-gray-800">
+
+        <button
+          type="button"
+          onClick={goHome}
+          className="font-display text-2xl font-semibold text-slate-800 dark:text-slate-50 tracking-tight"
+        >
           BookFinder
-        </h1>
-        <button className="text-gray-800">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-8"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-            />
-          </svg>
         </button>
+
+        <ThemeToggle />
       </div>
-      <SearchBar/>
-    </div>
+      <SearchBar />
+    </header>
   );
 }
 
