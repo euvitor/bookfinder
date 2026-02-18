@@ -37,13 +37,10 @@ export async function shareBook(book) {
 
 /**
  * Gera link de afiliado da Amazon baseado no ISBN
- * 
- * @param {Array} industryIdentifiers - Array de ISBNs da API
- * @param {string} affiliateId - Seu ID de afiliado Amazon
- * @returns {string|null} - URL de afiliado ou null
+ * Usa busca (/s?k=) em vez de link direto (/dp/) porque a Amazon BR
+ * não aceita ISBN-13 diretamente, precisa do ASIN interno
  */
 export function getAmazonAffiliateLink(industryIdentifiers, affiliateId = "euvitordev-20") {
-  // Validação: verifica se tem array de ISBNs
   if (!industryIdentifiers || !Array.isArray(industryIdentifiers) || industryIdentifiers.length === 0) {
     console.log("⚠️ Nenhum ISBN encontrado para este livro");
     return null;
@@ -51,29 +48,27 @@ export function getAmazonAffiliateLink(industryIdentifiers, affiliateId = "euvit
 
   console.log("📚 ISBNs disponíveis:", industryIdentifiers);
 
-  // Procura ISBN-13 primeiro (preferido pela Amazon)
+  // Procura ISBN-13 primeiro (mais usado), depois ISBN-10
   const isbn13 = industryIdentifiers.find((id) => id.type === "ISBN_13");
-  
-  // Se não tiver ISBN-13, usa ISBN-10
   const isbn10 = industryIdentifiers.find((id) => id.type === "ISBN_10");
 
-  // Pega o identificador (string do ISBN)
   const isbnValue = isbn13?.identifier || isbn10?.identifier;
 
   if (!isbnValue) {
-    console.log("⚠️ ISBN não encontrado nos identifiers");
+    console.log("⚠️ ISBN não encontrado");
     return null;
   }
 
   console.log("✅ ISBN encontrado:", isbnValue);
 
-  // Remove hífens do ISBN (Amazon não aceita com hífens)
+  // Remove hífens (Amazon não aceita com hífens na busca)
   const cleanIsbn = isbnValue.replace(/-/g, "");
 
-  // Monta URL da Amazon Brasil com tag de afiliado
-  const amazonUrl = `https://www.amazon.com.br/dp/${cleanIsbn}?tag=${affiliateId}`;
+  // Monta URL de BUSCA na Amazon (não link direto)
+  // A Amazon redireciona automaticamente para o produto correto
+  const amazonUrl = `https://www.amazon.com.br/s?k=${cleanIsbn}&tag=${affiliateId}&linkCode=ll2`;
   
-  console.log("🔗 Link Amazon gerado:", amazonUrl);
+  console.log("🔗 Link Amazon gerado (busca):", amazonUrl);
   
   return amazonUrl;
 }

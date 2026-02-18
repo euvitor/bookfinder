@@ -67,7 +67,7 @@ function Results() {
   //Estado de loading
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-950">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -85,7 +85,7 @@ function Results() {
   //Estado de erro
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-950">
         <Header />
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center max-w-md">
@@ -109,7 +109,7 @@ function Results() {
   //Estado de busca sem resultados
   if (books.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-950">
         <Header />
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
@@ -142,7 +142,7 @@ function Results() {
 
   //Resultado com livros
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-950">
       <Header />
       <main className="flex-1 w-full px-4 py-8">
         <div className="max-w-7xl mx-auto mb-6">

@@ -54,15 +54,20 @@ function SearchBar() {
   return (
     <div
       ref={searchWrapperRef}
-      className="w-full max-w-xl mx-auto mt-8 px-4 relative"
+      className="w-full max-w-xl mx-auto mt-2 px-4 relative"
     >
       <form onSubmit={handleSearch}>
-        {/* Search Input */}
-        <div className="border-2 border-gray-200 rounded-lg p-1 flex gap-1 bg-white shadow-sm focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-200 transition">
+        <div className="border border-white/20 dark:border-slate-700/30 rounded-xl p-1 flex gap-1 backdrop-blur-md bg-white/60 dark:bg-slate-800/40 shadow-lg shadow-gray-200/50 dark:shadow-slate-950/50 focus-within:border-blue-400/40 dark:focus-within:border-blue-500/40 focus-within:ring-2 focus-within:ring-blue-200/30 dark:focus-within:ring-blue-900/30 transition-all duration-200">
+          
+          {/* Botão de filtro */}
           <button
             type="button"
             onClick={() => setShowFilter(!showFilter)}
-            className={`flex-none rounded-md p-2 ${showFilter ? "bg-blue-100 text-blue-500" : "hover:bg-gray-100 text-gray-600"}`}
+            className={`flex-none rounded-lg p-2 transition-all duration-200 ${
+              showFilter
+                ? "bg-blue-500/20 dark:bg-blue-500/30 text-blue-600 dark:text-blue-400"
+                : "hover:bg-gray-500/10 dark:hover:bg-slate-600/30 text-gray-600 dark:text-slate-400"
+            }`}
             aria-label="Toggle filters"
             aria-expanded={showFilter}
           >
@@ -82,17 +87,19 @@ function SearchBar() {
             </svg>
           </button>
 
+          {/* Input de busca */}
           <input
             type="text"
-            className="flex-1 px-2 py-1 outline-none text-gray-700 placeholder:text-gray-400"
+            className="flex-1 px-2 py-1 outline-none bg-transparent text-gray-800 dark:text-slate-100 placeholder:text-gray-500/70 dark:placeholder:text-slate-400/70 font-medium"
             placeholder={placeholders[searchType]}
             onChange={(e) => setSearchTerm(e.target.value)}
             value={searchTerm}
           />
 
+          {/* Botão de buscar */}
           <button
             type="submit"
-            className="flex-none rounded-md p-2 bg-white text-gray-600 hover:bg-gray-100 active:bg-blue-500 active:text-white"
+            className="flex-none rounded-lg p-2 bg-white/40 dark:bg-slate-700/40 text-gray-700 dark:text-slate-300 hover:bg-blue-500/20 dark:hover:bg-blue-500/30 hover:text-blue-600 dark:hover:text-blue-400 active:bg-blue-500 active:text-white transition-all duration-200"
             aria-label="Search"
           >
             <svg
@@ -112,12 +119,13 @@ function SearchBar() {
           </button>
         </div>
 
-        {/* Filters */}
+        {/* Painel de Filtros */}
         {showFilter && (
           <div className="absolute top-full left-0 right-0 mt-1 px-4 z-10 animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="border-2 border-gray-200 rounded-lg p-1 bg-white shadow-md">
-              {/* Search Type Buttons */}
-              <div className="flex rounded-md mb-2 gap-2">
+            <div className="border border-white/20 dark:border-slate-700/30 rounded-xl p-3 backdrop-blur-lg bg-white/70 dark:bg-slate-800/60 shadow-xl shadow-gray-400/20 dark:shadow-slate-950/50">
+              
+              {/* Botões de tipo de busca */}
+              <div className="flex rounded-lg mb-3 gap-2">
                 {[
                   {
                     type: "title",
@@ -139,10 +147,10 @@ function SearchBar() {
                     key={type}
                     type="button"
                     onClick={() => setSearchType(type)}
-                    className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition ${
+                    className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                       searchType === type
-                        ? "bg-blue-500 text-white shadow-sm"
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                        ? "bg-blue-500 dark:bg-blue-600 text-white shadow-md"
+                        : "bg-white/50 dark:bg-slate-700/50 hover:bg-gray-200/60 dark:hover:bg-slate-600/60 text-gray-700 dark:text-slate-300"
                     }`}
                   >
                     <svg
