@@ -1,44 +1,48 @@
 import { useState, useEffect } from "react";
 
+/**
+ * ThemeToggle - Botão para alternar entre modo claro e escuro
+ *
+ * Prioridades de tema:
+ * 1. Preferência salva no localStorage
+ * 2. Preferência do sistema (prefers-color-scheme)
+ * 3. Padrão: modo claro
+ *
+ * Persiste a escolha do usuário no localStorage.
+ */
 function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
+  // Lazy initialization: calcula estado inicial apenas uma vez
+  const [isDark, setIsDark] = useState(() => {
     const storedTheme = localStorage.getItem("theme");
 
-    if (storedTheme === "dark") {
-      document.documentElement.classList.add("dark");
-      setIsDark(true);
-      return;
-    }
-    if (storedTheme === "light") {
-      document.documentElement.classList.remove("dark");
-      setIsDark(false);
-      return;
-    }
+    // Prioridade 1: Tema salvo explicitamente
+    if (storedTheme === "dark") return true;
+    if (storedTheme === "light") return false;
 
+    // Prioridade 2: Preferência do sistema operacional
     const prefersDark = window.matchMedia(
-      "(prefers-color-scheme:dark)",
+      "(prefers-color-scheme: dark)",
     ).matches;
 
-    if (prefersDark) {
-      document.documentElement.classList.add("dark");
-      setIsDark(true);
-    }
-  }, []);
+    return prefersDark;
+  });
 
+  // Sincroniza estado com classe "dark" no HTML
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDark]);
+
+  /**
+   * handleToggle - Alterna tema e salva no localStorage
+   */
   const handleToggle = () => {
     setIsDark((prev) => {
       const next = !prev;
-
-      if (next) {
-        document.documentElement.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-      }
-
+      localStorage.setItem("theme", next ? "dark" : "light");
       return next;
     });
   };
@@ -50,6 +54,7 @@ function ThemeToggle() {
       className="p-2 rounded-md text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 transition"
       aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
     >
+      {/* Ícone de Sol (modo escuro ativo) */}
       {isDark ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -66,6 +71,7 @@ function ThemeToggle() {
           />
         </svg>
       ) : (
+        /* Ícone de Lua (modo claro ativo) */
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

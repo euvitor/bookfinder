@@ -4,16 +4,22 @@ import { getBestBookCover } from "../utils/imageHelpers";
 /**
  * SearchItem - Card de livro na lista de resultados
  *
- * @param {string} id - ID do livro
- * @param {string} image - URL thumbnail (não usado mais, usamos book completo)
+ * Exibe capa, título e autor do livro. Ao clicar, redireciona para a página
+ * de detalhes passando o objeto book completo via state (otimização).
+ *
+ * @param {string} id - ID único do livro (Google Books ID)
+ * @param {string} image - URL thumbnail (deprecated, mantido por compatibilidade)
  * @param {string} title - Título do livro
- * @param {string} author - Autor(es)
- * @param {object} book - Objeto completo do livro (para passar ao Details)
+ * @param {string} author - Autor(es) formatado
+ * @param {object} book - Objeto completo do livro da API (passado ao Details)
  */
-
 function SearchItem({ id, title, author, book }) {
   const navigate = useNavigate();
 
+  /**
+   * handleClick - Redireciona para página de detalhes com dados do livro
+   * Usa location.state para evitar nova requisição à API
+   */
   const handleClick = () => {
     navigate(`/details/${id}`, {
       state: { book },
@@ -25,7 +31,7 @@ function SearchItem({ id, title, author, book }) {
       onClick={handleClick}
       className="bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group"
     >
-      {/* Capa com aspect ratio fixo */}
+      {/* Capa do livro (aspect ratio 2:3 fixo) */}
       <div className="relative aspect-2/3 bg-gray-100 dark:bg-slate-700 overflow-hidden">
         <img
           src={getBestBookCover(book.volumeInfo.imageLinks)}
@@ -39,9 +45,9 @@ function SearchItem({ id, title, author, book }) {
         />
       </div>
 
-      {/* Info do livro */}
+      {/* Informações do livro */}
       <div className="p-4">
-        <h3 className="font-displayfont-display text-base font-semibold text-gray-900 dark:text-slate-50 mb-1 line-clamp-2 leading-tight">
+        <h3 className="font-display text-base font-semibold text-gray-900 dark:text-slate-50 mb-1 line-clamp-2 leading-tight">
           {title}
         </h3>
         <p className="font-sans text-sm text-gray-600 dark:text-slate-400 line-clamp-1">

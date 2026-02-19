@@ -14,3 +14,42 @@
 }
 
 @custom-variant dark (&:is(.dark *));
+
+/* Scrollbar customizada com glassmorphism */
+.glass-scrollbar::-webkit-scrollbar {
+  width: 36px;
+}
+
+.glass-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.glass-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s;
+}
+
+.glass-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* Dark mode */
+.dark .glass-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.dark .glass-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+
+/* Firefox */
+.glass-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+}
+
+.dark .glass-scrollbar {
+  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+}

@@ -2,20 +2,32 @@ import { useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import SearchBar from "./SearchBar";
 
+/**
+ * Header - Cabeçalho fixo com navegação e busca
+ *
+ * Aparece em todas as páginas exceto Home.
+ * Inclui: botão voltar, logo clicável, toggle de tema e barra de busca.
+ */
 function Header() {
   const navigate = useNavigate();
 
+  /**
+   * handleBack - Volta para a página anterior no histórico
+   */
   const handleBack = () => {
     navigate(-1);
   };
 
+  /**
+   * goHome - Redireciona para a página inicial
+   */
   const goHome = () => {
     navigate("/");
   };
 
   return (
     <header className="sticky top-0 z-50 w-full px-4 pt-3 pb-8 bg-linear-to-b from-white via-white/75 to-white/0 dark:from-slate-900 dark:via-slate-900/75 dark:to-slate-900/0">
-      {/* Navbar superior */}
+      {/* Navbar: Voltar | Logo | Tema */}
       <div className="flex items-center justify-between">
         {/* Botão Voltar */}
         <button
@@ -40,7 +52,7 @@ function Header() {
           </svg>
         </button>
 
-        {/* Logo / Título */}
+        {/* Logo clicável (vai para Home) */}
         <button
           type="button"
           onClick={goHome}
@@ -49,11 +61,11 @@ function Header() {
           BookFinder
         </button>
 
-        {/* Botão de tema */}
+        {/* Toggle dark/light mode */}
         <ThemeToggle />
       </div>
 
-      {/* Barra de busca */}
+      {/* Barra de busca rápida */}
       <SearchBar />
     </header>
   );

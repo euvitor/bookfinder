@@ -1,11 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 
+/**
+ * CustomCombobox - Select estilizado customizado
+ *
+ * Componente de seleção dropdown com suporte a dark mode e animações.
+ * Usado nos filtros de busca (idioma e gênero).
+ *
+ * @param {string} label - Rótulo do campo (para acessibilidade)
+ * @param {string} value - Valor selecionado atualmente
+ * @param {function} onChange - Callback chamado ao selecionar opção
+ * @param {Array<{value: string, label: string}>} options - Lista de opções disponíveis
+ */
 function CustomCombobox({ label, value, onChange, options }) {
   const [isOpen, setIsOpen] = useState(false);
   const comboboxRef = useRef(null);
 
+  // Encontra opção atualmente selecionada
   const selectedOption = options.find((opt) => opt.value === value);
 
+  // Fecha dropdown ao clicar fora
   useEffect(() => {
     function handleClickOutside(event) {
       if (comboboxRef.current && !comboboxRef.current.contains(event.target)) {
@@ -19,7 +32,7 @@ function CustomCombobox({ label, value, onChange, options }) {
 
   return (
     <div ref={comboboxRef} className="relative flex-1">
-      {/* Botão do select*/}
+      {/* Botão que abre/fecha o dropdown */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -30,6 +43,8 @@ function CustomCombobox({ label, value, onChange, options }) {
         <span className="truncate font-medium">
           {selectedOption?.label || `Selecione ${label.toLowerCase()}`}
         </span>
+
+        {/* Ícone de seta (rotaciona quando aberto) */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -46,7 +61,7 @@ function CustomCombobox({ label, value, onChange, options }) {
         </svg>
       </button>
 
-      {/* Dropdown*/}
+      {/* Lista de opções (dropdown) */}
       {isOpen && (
         <div
           data-combobox-options

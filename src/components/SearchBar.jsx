@@ -1,9 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomCombobox from "./CustomCombobox";
-import { useRef } from "react";
 
+/**
+ * SearchBar - Barra de busca com filtros expansíveis
+ *
+ * Permite buscar livros por título, autor ou ISBN.
+ * Filtros opcionais: idioma e gênero.
+ * Redireciona para /results com query params.
+ */
 function SearchBar() {
+  // Estados de filtros
   const [showFilter, setShowFilter] = useState(false);
   const [searchType, setSearchType] = useState("title");
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,6 +19,7 @@ function SearchBar() {
 
   const searchWrapperRef = useRef(null);
 
+  // Placeholders dinâmicos por tipo de busca
   const placeholders = {
     title: "Digite o título do livro",
     author: "Digite o nome autor",
@@ -20,6 +28,9 @@ function SearchBar() {
 
   const navigate = useNavigate();
 
+  /**
+   * handleSearch - Processa busca e redireciona para página de resultados
+   */
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
@@ -29,12 +40,14 @@ function SearchBar() {
     );
   };
 
+  // Fecha painel de filtros ao clicar fora
   useEffect(() => {
     function handleClickOutside(event) {
       const wrapper = searchWrapperRef.current;
       if (!wrapper || wrapper.contains(event.target)) {
         return;
       }
+      // Ignora cliques dentro do CustomCombobox
       if (
         event.target.closest("[data-combobox-options]") ||
         event.target.closest("[data-combobox-option]")
@@ -57,9 +70,9 @@ function SearchBar() {
       className="w-full max-w-xl mx-auto mt-2 px-4 relative"
     >
       <form onSubmit={handleSearch}>
+        {/* Barra de busca principal */}
         <div className="border border-white/20 dark:border-slate-700/30 rounded-xl p-1 flex gap-1 backdrop-blur-md bg-white/60 dark:bg-slate-800/40 shadow-lg shadow-gray-200/50 dark:shadow-slate-950/50 focus-within:border-blue-400/40 dark:focus-within:border-blue-500/40 focus-within:ring-2 focus-within:ring-blue-200/30 dark:focus-within:ring-blue-900/30 transition-all duration-200">
-          
-          {/* Botão de filtro */}
+          {/* Botão toggle de filtros */}
           <button
             type="button"
             onClick={() => setShowFilter(!showFilter)}
@@ -119,12 +132,11 @@ function SearchBar() {
           </button>
         </div>
 
-        {/* Painel de Filtros */}
+        {/* Painel de Filtros (expansível) */}
         {showFilter && (
           <div className="absolute top-full left-0 right-0 mt-1 px-4 z-10 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="border border-white/20 dark:border-slate-700/30 rounded-xl p-3 backdrop-blur-lg bg-white/70 dark:bg-slate-800/60 shadow-xl shadow-gray-400/20 dark:shadow-slate-950/50">
-              
-              {/* Botões de tipo de busca */}
+              {/* Botões de tipo de busca (Título/Autor/ISBN) */}
               <div className="flex rounded-lg mb-3 gap-2">
                 {[
                   {
@@ -172,7 +184,7 @@ function SearchBar() {
                 ))}
               </div>
 
-              {/* Select Dropdowns */}
+              {/* Filtros de Idioma e Gênero */}
               <div className="flex gap-2">
                 <CustomCombobox
                   label="Idioma"
