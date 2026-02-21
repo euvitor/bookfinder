@@ -6,7 +6,7 @@
 
 Uma aplicação web moderna para buscar livros usando a API do Google Books, com filtros avançados, dark mode e interface responsiva.
 
-[🚀 Ver Demo](#) • [📖 Documentação](#-instalação) • [🐛 Reportar Bug](../../issues)
+[🚀 Ver Demo](https://bookfinder.euvitor.dev) • [📖 Documentação](#-instalação) • [🐛 Reportar Bug](../../issues)
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat&logo=vite&logoColor=white)
