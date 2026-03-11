@@ -46,11 +46,11 @@ function SearchItem({ id, title, author, book }) {
       </div>
 
       {/* Informações do livro */}
-      <div className="p-4">
-        <h3 className="font-display text-base font-semibold text-gray-900 dark:text-slate-50 mb-1 line-clamp-2 leading-tight">
+      <div className="p-2 sm:p-3 lg:p-4">
+        <h3 className="font-display text-[12px] sm:text-sm lg:text-base font-semibold text-gray-900 dark:text-slate-50 mb-0.5 sm:mb-1 line-clamp-2 leading-tight">
           {title}
         </h3>
-        <p className="font-sans text-sm text-gray-600 dark:text-slate-400 line-clamp-1">
+        <p className="font-sans text-[10px] sm:text-xs lg:text-sm text-gray-600 dark:text-slate-400 line-clamp-1">
           {author}
         </p>
       </div>

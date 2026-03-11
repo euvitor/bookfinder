@@ -45,57 +45,44 @@ export async function shareBook(book) {
 /**
  * getAmazonAffiliateLink - Gera link de busca na Amazon com tag de afiliado
  *
- * Usa busca (/s?k=ISBN) ao invés de link direto (/dp/ASIN) porque:
- * - Amazon BR não aceita ISBN-13 diretamente no formato /dp/
- * - Cada livro tem um ASIN interno diferente do ISBN
- * - Busca por ISBN redireciona automaticamente para o produto correto
+ * Busca por título + autor para maior probabilidade de encontrar o livro.
+ * Usa filtro de autor (rh) para refinar resultados mesmo em títulos genéricos.
  *
- * Prioriza ISBN-13 (padrão internacional) sobre ISBN-10.
- *
- * @param {Array<{type: string, identifier: string}>} industryIdentifiers - Array de ISBNs do livro
+ * @param {Object} volumeInfo - Objeto volumeInfo completo do livro da API
  * @param {string} affiliateId - Tag de afiliado da Amazon (padrão: euvitordev-20)
- * @returns {string|null} URL da Amazon com afiliado, ou null se não houver ISBN
+ * @returns {string|null} URL da Amazon com afiliado, ou null se não houver título
  */
 export function getAmazonAffiliateLink(
-  industryIdentifiers,
+  volumeInfo,
   affiliateId = "euvitordev-20",
 ) {
-  // Validação: verifica se há ISBNs disponíveis
-  if (
-    !industryIdentifiers ||
-    !Array.isArray(industryIdentifiers) ||
-    industryIdentifiers.length === 0
-  ) {
-    console.log("⚠️ Nenhum ISBN encontrado para este livro");
+  // Validação: título é obrigatório para a busca
+  if (!volumeInfo?.title) {
+    console.log("⚠️ Título não encontrado para este livro");
     return null;
   }
 
-  console.log("📚 ISBNs disponíveis:", industryIdentifiers);
+  // Formata título substituindo espaços por + (padrão URL da Amazon)
+  const searchQuery = volumeInfo.title.replaceAll(" ", "+");
 
-  // Procura ISBN-13 primeiro (mais usado), depois ISBN-10
-  const isbn13 = industryIdentifiers.find((id) => id.type === "ISBN_13");
-  const isbn10 = industryIdentifiers.find((id) => id.type === "ISBN_10");
+  // Monta URL base de busca com título
+  let amazonUrl = `https://www.amazon.com.br/s?k=${searchQuery}&tag=${affiliateId}&linkCode=ll2`;
 
-  const isbnValue = isbn13?.identifier || isbn10?.identifier;
-
-  if (!isbnValue) {
-    console.log("⚠️ ISBN não encontrado");
-    return null;
+  // Adiciona filtro de autor se disponível (refina a busca)
+  if (volumeInfo.authors?.length > 0) {
+    const bookAuthor = volumeInfo.authors[0].replaceAll(" ", "+");
+    amazonUrl += `&rh=p_lbr_books_authors_browse-bin%3A${bookAuthor}`;
+    console.log(
+      "✅ Buscando por título + autor:",
+      volumeInfo.title,
+      "+",
+      volumeInfo.authors[0],
+    );
+  } else {
+    console.log("✅ Buscando apenas por título:", volumeInfo.title);
   }
 
-  console.log("✅ ISBN encontrado:", isbnValue);
-
-  // Remove hífens do ISBN (Amazon não aceita formatação na busca)
-  const cleanIsbn = isbnValue.replace(/-/g, "");
-
-  // Monta URL de busca na Amazon com tag de afiliado
-  // Parâmetros:
-  // - k: keyword de busca (ISBN limpo)
-  // - tag: ID de afiliado
-  // - linkCode: código de rastreamento de afiliado (ll2 = text link)
-  const amazonUrl = `https://www.amazon.com.br/s?k=${cleanIsbn}&tag=${affiliateId}&linkCode=ll2`;
-
-  console.log("🔗 Link Amazon gerado (busca):", amazonUrl);
+  console.log("🔗 Link Amazon gerado:", amazonUrl);
 
   return amazonUrl;
 }

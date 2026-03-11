@@ -133,10 +133,7 @@ function Details() {
   const { volumeInfo } = book;
 
   // Gera link de afiliado da Amazon (se houver ISBN)
-  const amazonLink = getAmazonAffiliateLink(
-    volumeInfo.industryIdentifiers,
-    "euvitordev-20",
-  );
+  const amazonLink = getAmazonAffiliateLink(volumeInfo, "euvitordev-20");
 
   return (
     <div className="h-screen flex flex-col bg-slate-100 dark:bg-slate-950">
@@ -204,7 +201,7 @@ function Details() {
                     </svg>
                   </button>
 
-                  {/* Botão Amazon (aparece apenas se houver ISBN) */}
+                  {/* Botão Amazon */}
                   {amazonLink && (
                     <a
                       href={amazonLink}
