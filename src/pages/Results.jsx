@@ -31,7 +31,16 @@ function Results() {
 
   const [searchParams] = useSearchParams();
   const itemsPerPage = 20;
-
+  const [isGridView, setIsGridView] = useState(() => {
+    return localStorage.getItem("viewMode") !== "list"; // Lazy initialization: lê do localStorage na montagem
+  });
+  const handleViewToggle = () => {
+    setIsGridView((prev) => {
+      const next = !prev;
+      localStorage.setItem("viewMode", next ? "grid" : "list");
+      return next;
+    });
+  };
   /**
    * fetchBooks - Busca livros na API
    *
@@ -197,16 +206,77 @@ function Results() {
     <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-950">
       <Header />
       <main className="flex-1 w-full px-4 py-8">
-        {/* Contador de resultados */}
-        <div className="max-w-7xl mx-auto mb-6">
+        {/* Contador + Toggle de visualização */}
+        <div className="max-w-7xl mx-auto mb-6 flex items-center justify-between">
           <p className="text-gray-600 dark:text-slate-400 text-sm">
             Mostrando {books.length} de {totalItems.toLocaleString()}{" "}
             {books.length === 1 ? "livro" : "livros"}
           </p>
+
+          {/* Botões Grid/Lista */}
+          <div className="flex gap-1 bg-white dark:bg-slate-800 rounded-lg p-1 shadow-sm">
+            {/* Botão Grid */}
+            <button
+              onClick={() => !isGridView && handleViewToggle()}
+              className={`p-1.5 rounded-md transition-all duration-200 ${
+                isGridView
+                  ? "bg-blue-500/20 dark:bg-blue-500/30 text-blue-600 dark:text-blue-400"
+                : "hover:bg-gray-500/10 dark:hover:bg-slate-600/30 text-gray-600 dark:text-slate-400"
+              }`}
+              aria-label="Visualização em grade"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"
+                />
+              </svg>
+            </button>
+
+            {/* Botão Lista */}
+            <button
+              onClick={() => isGridView && handleViewToggle()}
+              className={`p-1.5 rounded-md transition-all duration-200 ${
+                !isGridView
+                  ? "bg-blue-500/20 dark:bg-blue-500/30 text-blue-600 dark:text-blue-400"
+                : "hover:bg-gray-500/10 dark:hover:bg-slate-600/30 text-gray-600 dark:text-slate-400"
+              }`}
+              aria-label="Visualização em lista"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        {/* Grid de livros */}
-        <div className="max-w-7xl mx-auto grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 lg:gap-6 mb-8">
+        {/* Grid ou Lista de livros */}
+        <div
+          className={`max-w-7xl mx-auto mb-8 ${
+            isGridView
+              ? "grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 lg:gap-6"
+              : "flex flex-col gap-2"
+          }`}
+        >
           {books.map((book) => (
             <SearchItem
               key={book.id}
@@ -217,6 +287,7 @@ function Results() {
                 book.volumeInfo.authors?.join(", ") || "Autor Desconhecido"
               }
               book={book}
+              isListView={!isGridView} // ← prop nova para o SearchItem
             />
           ))}
         </div>

@@ -12,8 +12,10 @@ import { getBestBookCover } from "../utils/imageHelpers";
  * @param {string} title - Título do livro
  * @param {string} author - Autor(es) formatado
  * @param {object} book - Objeto completo do livro da API (passado ao Details)
+ * @param {boolean} isListView - Indica a preferência layout dos resultados para renderização do tipo de card correto
+ *
  */
-function SearchItem({ id, title, author, book }) {
+function SearchItem({ id, title, author, book, isListView }) {
   const navigate = useNavigate();
 
   /**
@@ -26,6 +28,37 @@ function SearchItem({ id, title, author, book }) {
     });
   };
 
+  // Modo Lista
+  if (isListView) {
+    return (
+      <div
+        onClick={handleClick}
+        className="bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer flex gap-3 p-2 group"
+      >
+        {/* Capa pequena (modo lista) */}
+        <img
+          src={getBestBookCover(book.volumeInfo.imageLinks)}
+          alt={title}
+          className="w-12 h-16 object-cover rounded shrink-0"
+          onError={(e) => {
+            e.target.src = "data:image/svg+xml,...";
+          }}
+          loading="lazy"
+        />
+        {/* Info */}
+        <div className="flex flex-col justify-center min-w-0">
+          <h3 className="font-display text-sm font-semibold text-gray-900 dark:text-slate-50 line-clamp-1 leading-tight">
+            {title}
+          </h3>
+          <p className="font-sans text-xs text-gray-600 dark:text-slate-400 line-clamp-1 mt-0.5">
+            {author}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Modo Grid
   return (
     <div
       onClick={handleClick}
