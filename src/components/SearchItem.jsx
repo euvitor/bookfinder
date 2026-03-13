@@ -25,7 +25,7 @@ function SearchItem({ id, title, author, book, isListView }) {
     navigate(`/details/${id}`, { state: { book } });
   };
 
-  // Extrai apenas o ano da string de data (ex: "2003-07-21" → "2003")
+  // Apenas o ano da string de data (ex: "2003-07-21" → "2003")
   const year = volumeInfo.publishedDate?.split("-")[0];
 
   // Dados opcionais (exibidos apenas quando disponíveis)
